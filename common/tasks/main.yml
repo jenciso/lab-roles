@@ -1,0 +1,19 @@
+- name: common | packages installation
+  yum:
+    name: 
+      - unzip
+      - bind-utils
+      - net-tools
+      - firewalld
+      - tcpdump
+      - lsof
+      - epel-release
+    state: present
+
+
+- name: common | extra packages installation
+  yum:
+    name:
+      - htop
+      - ntpdate
+    state: present

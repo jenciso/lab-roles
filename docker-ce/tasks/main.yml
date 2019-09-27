@@ -1,0 +1,61 @@
+---
+- name: docker | Install prereq packages
+  yum: name=python-pip state=present
+
+
+- name: docker | installing pip packages
+  pip: name=docker-py
+
+
+- name: docker | Installing prereq packages 
+  yum: 
+    name:
+      - yum-utils
+      - device-mapper-persistent-data
+      - lvm2
+    state: present
+
+
+- name: docker | Installing repo
+  yum_repository: 
+    name: docker-ce-stable
+    description: Docker CE Stable - $basearch
+    baseurl: https://download.docker.com/linux/centos/7/$basearch/stable
+    file: docker-ce
+    gpgcheck: yes
+    gpgkey: https://download.docker.com/linux/centos/gpg
+
+    
+- name: docker | Upgrade docker-ce
+  yum: name=docker-ce-{{ docker_version }} state=present
+  when: docker_upgrade
+
+
+- name: docker | Install docker-ce
+  yum: name=docker-ce state=present
+
+
+- name: docker | LVM configuration 
+  include: lvm.yml
+  when: docker_lvm_storage
+
+
+- name: docker | proxy configuration
+  include: proxy.yml
+  when: proxy_enabled 
+
+
+- name: docker | setup custom config
+  include: custom_config.yml
+  when: docker_custom_config
+
+
+- name: docker | Start Service
+  systemd: name=docker state=started enabled=yes
+
+
+- name: docker | Install docker-compose
+  include: docker-compose.yml
+  tags:
+    - docker
+    - docker-compose

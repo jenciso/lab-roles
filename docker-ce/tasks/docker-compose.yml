@@ -1,0 +1,15 @@
+---
+- name: docker | upgrade pip
+  shell: pip install --upgrade --force-reinstall pip==9.0.3
+
+
+- name: docker | install docker
+  pip: name=docker version=3.4.1 state=forcereinstall
+
+
+- name: docker | install docker-compose
+  pip: name=docker-compose version=1.19.0 state=forcereinstall
+
+
+- name: docker | last step 
+  shell: pip uninstall docker-py -y; pip uninstall docker -y; pip install docker
